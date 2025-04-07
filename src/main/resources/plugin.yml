@@ -1,0 +1,11 @@
+name: BuildArea
+version: 1
+main: me.rejomy.buildarea.BuildArea
+commands:
+  buildarea:
+    permission: buildarea.command
+    permission-message: "You dont have buildarea.command permission!"
+depend:
+  - packetevents
+softdepend:
+  - worldguard

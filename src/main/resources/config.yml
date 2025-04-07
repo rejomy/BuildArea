@@ -1,0 +1,15 @@
+# If you want the block destroy animation, you should add PacketEvents.jar to your server.
+
+# If world guard is installed, you can choose regions where this plugin will work.
+regions:
+  - build_area
+
+# Worlds where this plugin will work.
+# Do not choose world if you choose only some regions in world, otherwise plugin will ignore regions.
+worlds:
+  - world
+
+# How many ticks should go before the block will be removed.
+block-destroy-ticks: 4
+
+deny-message: "You cant interact with it here!"
