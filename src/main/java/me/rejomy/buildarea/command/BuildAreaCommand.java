@@ -16,32 +16,36 @@ public class BuildAreaCommand implements CommandExecutor {
         if (args.length == 0) {
             sendHelp(sender);
         } else {
-            switch (args[0].toLowerCase()) {
-                case "help" -> {
-                    Player player = null;
+            if (args[0].equalsIgnoreCase("build")) {
+                Player player = null;
+                String playerName = null;
 
-                    if (args.length == 2) {
-                        String playerName = args[1];
-                        player = Bukkit.getPlayer(playerName);
-                    }
+                if (args.length == 2) {
+                    playerName = args[1];
+                    player = Bukkit.getPlayer(playerName);
+                }
 
-                    if (player == null) {
-                        if (sender instanceof ConsoleCommandSender) {
-                            sender.sendMessage(ChatColor.RED + "You should choose player name or player with selected name doesnt exists!");
-                            sender.sendMessage(ChatColor.RED + "/ba build nick");
-                        } else player = Bukkit.getPlayer(sender.getName());
-                    }
-
-                    if (player != null) {
-                        boolean exists = BuildArea.getInstance().getUserManager().getWhitePlayerList().remove(player);
-                        sender.sendMessage("Your build status is " + (!exists ? ChatColor.GREEN + " enabled " : ChatColor.RED + " disabled "));
-
-                        if (!exists)
-                            BuildArea.getInstance().getUserManager().getWhitePlayerList().add(player);
+                if (player == null) {
+                    if (sender instanceof ConsoleCommandSender) {
+                        sender.sendMessage(ChatColor.RED + "You should choose player name or player with selected name doesnt exists!");
+                        sender.sendMessage(ChatColor.RED + "/ba build nick");
+                    } else {
+                        playerName = sender.getName();
+                        player = Bukkit.getPlayer(sender.getName());
                     }
                 }
 
-                default -> sendHelp(sender);
+                if (player != null) {
+                    boolean exists = BuildArea.getInstance().getUserManager().getWhitePlayerList().remove(player);
+                    sender.sendMessage("Your build status is " + (!exists ? ChatColor.GREEN + " enabled " : ChatColor.RED + " disabled "));
+
+                    if (!exists)
+                        BuildArea.getInstance().getUserManager().getWhitePlayerList().add(player);
+                } else {
+                    sender.sendMessage("Player with name " + playerName + " not found!");
+                }
+            } else {
+                sendHelp(sender);
             }
         }
 

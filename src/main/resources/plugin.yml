@@ -3,6 +3,8 @@ version: 1
 main: me.rejomy.buildarea.BuildArea
 commands:
   buildarea:
+    aliases:
+      - ba
     permission: buildarea.command
     permission-message: "You dont have buildarea.command permission!"
 depend:
