@@ -37,12 +37,12 @@ public class BuildAreaCommand implements CommandExecutor {
 
                 if (player != null) {
                     boolean exists = BuildArea.getInstance().getUserManager().getWhitePlayerList().remove(player);
-                    sender.sendMessage("Your build status is " + (!exists ? ChatColor.GREEN + " enabled " : ChatColor.RED + " disabled "));
+                    sender.sendMessage("Your build status is " + (!exists ? ChatColor.GREEN + "enabled" : ChatColor.RED + "disabled"));
 
                     if (!exists)
                         BuildArea.getInstance().getUserManager().getWhitePlayerList().add(player);
                 } else {
-                    sender.sendMessage("Player with name " + playerName + " not found!");
+                    sender.sendMessage(ChatColor.RED + "Player with name " + playerName + " not found!");
                 }
             } else {
                 sendHelp(sender);

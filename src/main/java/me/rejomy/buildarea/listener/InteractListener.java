@@ -34,12 +34,7 @@ public class InteractListener implements Listener {
             return;
         }
 
-        if (item.getType() == Material.ARMOR_STAND) {
-            sendMessage(event.getPlayer());
-            event.setCancelled(true);
-            return;
-        }
-
+        // I dont know why but player can place it somehow if we will check hasBlock, so if it placed to the air it is still triggering placing??
         String[] restrictedMaterials = {"WATER", "LAVA", "VINE"};
         if (StringUtil.contains(item.getType().name(), restrictedMaterials)) {
             sendMessage(event.getPlayer());

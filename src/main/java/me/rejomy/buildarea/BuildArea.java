@@ -42,6 +42,11 @@ public class BuildArea extends JavaPlugin {
         initListeners();
     }
 
+    @Override
+    public void onDisable() {
+
+    }
+
     private void initListeners() {
         registerListener(new ConnectionListener());
         registerListener(new BlockListener());
