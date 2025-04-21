@@ -50,7 +50,7 @@ public class InteractListener implements Listener {
                 return;
             }
 
-            if (item.getType() == Material.INK_SACK && item.getDurability() == 15) {
+            if (item.getType() == Material.BONE_MEAL) {
                 sendMessage(event.getPlayer());
                 event.setCancelled(true);
                 return;

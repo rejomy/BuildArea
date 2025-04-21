@@ -12,13 +12,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
 @Getter
 @Setter
-public final class PlaceResetTask extends BukkitRunnable {
+public final class PlaceResetTask implements Runnable {
 
     private final BlockData blockData;
     private int scheduleTaskId;

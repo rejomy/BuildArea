@@ -55,12 +55,12 @@ public class LocationManager {
             actionData.setBottomPart(doubleBlockBottom.getRawData());
         }
 
-        int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+        int taskId = Bukkit.getScheduler().runTaskTimer(
                 BuildArea.getInstance(),
                 placeResetTask,
                 20L,
                 20L
-        );
+        ).getTaskId();
         placeResetTask.setScheduleTaskId(taskId);
         operations.put(location, actionData);
     }
