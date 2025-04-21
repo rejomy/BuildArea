@@ -13,13 +13,12 @@ public class BlockData {
     private final int breakIndex;
     private int liveCycle;
     private final Location location;
-    private byte bottomPart;
+    private int bottomPart; // ← FIXED type
 
     public BlockData(BlockState originBlockState, int breakIndex) {
         this.originBlockState = originBlockState;
         this.breakIndex = breakIndex;
-        Location location = this.originBlockState.getLocation();
-        this.location = location;
-        this.bottomPart = 1;
+        this.location = originBlockState.getLocation();
+        this.bottomPart = 1; // default value
     }
 }

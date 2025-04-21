@@ -9,6 +9,7 @@ import me.rejomy.buildarea.util.WGUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Bisected;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class LocationManager {
 
         Location location = originBlockState.getLocation();
         Object[] objectArray = new Object[]{
-                originBlockState.getType().getId(),
+                originBlockState.getBlockData(),
                 location.getX(),
                 location.getY(),
                 location.getZ()
@@ -52,7 +53,16 @@ public class LocationManager {
         }
 
         if (doubleBlockBottom != null) {
-            actionData.setBottomPart(doubleBlockBottom.getRawData());
+            org.bukkit.block.data.BlockData bukkitBlockData = doubleBlockBottom.getBlockData();
+
+            if (bukkitBlockData instanceof Bisected) {
+                Bisected bisected = (Bisected) bukkitBlockData;
+
+                // Store 0 for BOTTOM, 1 for TOP — your choice
+                int part = (bisected.getHalf() == Bisected.Half.BOTTOM) ? 0 : 1;
+
+                actionData.setBottomPart(part);
+            }
         }
 
         int taskId = Bukkit.getScheduler().runTaskTimer(
