@@ -59,7 +59,6 @@ public class BlockListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        String lastBlockName = event.getBlockReplacedState().getType().name().toLowerCase();
         Location place = block.getLocation();
 
         if (BuildArea.getInstance().getUserManager().getWhitePlayerList().contains(player)) {
@@ -67,11 +66,6 @@ public class BlockListener implements Listener {
         }
 
         if (!locationManager.isArenaPosition(place)) {
-            return;
-        }
-
-        if (lastBlockName.contains("water") || lastBlockName.contains("lava")) {
-            event.setCancelled(true);
             return;
         }
 
@@ -114,12 +108,15 @@ public class BlockListener implements Listener {
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Block block = event.getBlock();
         Location place = block.getLocation();
+        String lastBlockName = event.getBlock().getType().name().toLowerCase();
 
         if (!locationManager.isArenaPosition(place)) {
             return;
         }
 
         if (block.getType() == Material.CACTUS) {
+            event.setCancelled(true);
+        } else if (lastBlockName.contains("water") || lastBlockName.contains("lava")) {
             event.setCancelled(true);
         }
     }
