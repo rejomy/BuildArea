@@ -34,14 +34,6 @@ public class InteractListener implements Listener {
             return;
         }
 
-        // I dont know why but player can place it somehow if we will check hasBlock, so if it placed to the air it is still triggering placing??
-        String[] restrictedMaterials = {"WATER", "LAVA", "VINE"};
-        if (StringUtil.contains(item.getType().name(), restrictedMaterials)) {
-            sendMessage(event.getPlayer());
-            event.setCancelled(true);
-            return;
-        }
-
         if (event.getClickedBlock() != null) {
             Material clickedBlockType = event.getClickedBlock().getType();
 
@@ -62,11 +54,6 @@ public class InteractListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-        }
-
-        if (!item.getType().isSolid() && item.getType() == Material.BUCKET) {
-            sendMessage(event.getPlayer());
-            event.setCancelled(true);
         }
     }
 

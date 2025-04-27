@@ -1,21 +1,16 @@
 package me.rejomy.buildarea.util;
 
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.util.Vector3i;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBlockBreakAnimation;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import me.rejomy.buildarea.BuildArea;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
-import java.util.List;
-import java.util.Set;
 
 @UtilityClass
 public class WGUtil {
@@ -33,29 +28,30 @@ public class WGUtil {
     }
 
     public boolean isLocationInValidRegion(Location location) {
-        if (!present)
-            return false;
+        RegionContainer container = WorldGuard.getInstance()
+                .getPlatform()
+                .getRegionContainer();
 
-        // Get the WorldGuard plugin instance
-        WorldGuardPlugin wg = WorldGuardPlugin.inst();
-
-        // Get the region manager for the world the location is in
-        RegionManager regionManager = wg.getRegionManager(location.getWorld());
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(location.getWorld()));
 
         if (regionManager == null) {
             return false;
         }
 
-        // Iterate through the list of region IDs
-        for (String regionName : BuildArea.getInstance().getCustomConfig().getRegions()) {
-            // Get the specific region by ID
-            ProtectedRegion region = regionManager.getRegion(regionName);
-            if (region != null && region.contains(location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
-                // The location is inside the region
+        RegionQuery query = container.createQuery();
+
+        ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(location));
+
+        for (String regionId : BuildArea.getInstance()
+                .getCustomConfig()
+                .getRegions()) {
+
+            if (set.getRegions().stream()
+                    .anyMatch(r -> r.getId().equalsIgnoreCase(regionId))) {
                 return true;
             }
         }
-        // Location is not inside any of the regions
+
         return false;
     }
 }
