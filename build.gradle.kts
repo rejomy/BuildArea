@@ -7,7 +7,7 @@ group = "me.rejomy"
 version = "1.0-SNAPSHOT"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17)) // Paper 1.21.4 requires Java 17+
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21)) // Paper 1.21.4 requires Java 17+
 }
 
 repositories {
