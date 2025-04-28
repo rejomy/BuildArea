@@ -61,11 +61,11 @@ public class BlockListener implements Listener {
         Block block = event.getBlock();
         Location place = block.getLocation();
 
-        if (BuildArea.getInstance().getUserManager().getWhitePlayerList().contains(player)) {
+        if (!locationManager.isArenaPosition(place)) {
             return;
         }
 
-        if (!locationManager.isArenaPosition(place)) {
+        if (BuildArea.getInstance().getUserManager().getWhitePlayerList().contains(player)) {
             return;
         }
 
@@ -125,7 +125,8 @@ public class BlockListener implements Listener {
     public void onGrowth(BlockFadeEvent event) {
         Block block = event.getBlock();
         Location location = block.getLocation();
-        if (locationManager.isArenaPosition(location) || block.getWorld().getName().contains("duels_maps")) {
+
+        if (locationManager.isArenaPosition(location)) {
             event.setCancelled(true);
         }
     }

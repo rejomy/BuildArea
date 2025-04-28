@@ -7,9 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.SpongeAbsorbEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -27,6 +27,10 @@ public class ActionListener implements Listener {
         Block block = event.getBlockClicked();
         Material type = block.getType();
 
+        if (!locationManager.isArenaPosition(block.getLocation()) || BuildArea.getInstance().getUserManager().getWhitePlayerList().contains(player)) {
+            return;
+        }
+
         if (type == Material.WATER || type == Material.LAVA) {
             sendMessage(player);
             event.setCancelled(true);
@@ -35,10 +39,15 @@ public class ActionListener implements Listener {
 
     @EventHandler
     public void onWaterOrLavaPlaceEvent(PlayerBucketEmptyEvent event) {
+        Player player = event.getPlayer();
         Location location = event.getBlock().getLocation();
 
+        if (BuildArea.getInstance().getUserManager().getWhitePlayerList().contains(player)) {
+            return;
+        }
+
         if (locationManager.isArenaPosition(location)) {
-            sendMessage(event.getPlayer());
+            sendMessage(player);
             event.setCancelled(true);
         }
     }
@@ -57,7 +66,18 @@ public class ActionListener implements Listener {
 
     @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent event) {
-        if (locationManager.getPlacedBlocks().contains(event.getBlock().getLocation())) {
+        if (locationManager.isArenaPosition(event.getBlock().getLocation())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onSignChange(SignChangeEvent event) {
+        if (locationManager.isArenaPosition(event.getBlock().getLocation())) {
+            if (BuildArea.getInstance().getUserManager().getWhitePlayerList().contains(event.getPlayer())) {
+                return;
+            }
+
             event.setCancelled(true);
         }
     }
@@ -71,6 +91,45 @@ public class ActionListener implements Listener {
         }
 
         event.blockList().removeIf(block -> !locationManager.getPlacedBlocks().contains(block.getLocation()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBlockFromTo(BlockFromToEvent event) {
+        Block block = event.getBlock();
+        Location place = block.getLocation();
+
+        if (!locationManager.isArenaPosition(place)) {
+            return;
+        }
+
+        // This prevents water/lava from flowing
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLiquidFlow(BlockFromToEvent event) {
+        Block toBlock = event.getToBlock();
+        Location toPlace = toBlock.getLocation();
+
+        if (!locationManager.isArenaPosition(toPlace)) {
+            return;
+        }
+
+        // This prevents water/lava from flowing to another location
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onFluidLevelChange(FluidLevelChangeEvent event) {
+        Block block = event.getBlock();
+        Location place = block.getLocation();
+
+        if (!locationManager.isArenaPosition(place)) {
+            return;
+        }
+
+        // This prevents water level changes in newer versions
+        event.setCancelled(true);
     }
 
     private void sendMessage(Player player) {
