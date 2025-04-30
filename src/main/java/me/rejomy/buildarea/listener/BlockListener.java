@@ -108,17 +108,12 @@ public class BlockListener implements Listener {
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Block block = event.getBlock();
         Location place = block.getLocation();
-        String lastBlockName = event.getBlock().getType().name().toLowerCase();
 
         if (!locationManager.isArenaPosition(place)) {
             return;
         }
 
-        if (block.getType() == Material.CACTUS) {
-            event.setCancelled(true);
-        } else if (lastBlockName.contains("water") || lastBlockName.contains("lava")) {
-            event.setCancelled(true);
-        }
+        event.setCancelled(true);
     }
 
     @EventHandler
