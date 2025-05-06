@@ -108,8 +108,9 @@ public class BlockListener implements Listener {
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Block block = event.getBlock();
         Location place = block.getLocation();
+        boolean isDoor = block.getType().name().endsWith("_DOOR");
 
-        if (!locationManager.isArenaPosition(place)) {
+        if (!locationManager.isArenaPosition(place) || isDoor) {
             return;
         }
 

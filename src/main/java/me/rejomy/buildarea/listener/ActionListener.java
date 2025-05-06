@@ -107,19 +107,6 @@ public class ActionListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onLiquidFlow(BlockFromToEvent event) {
-        Block toBlock = event.getToBlock();
-        Location toPlace = toBlock.getLocation();
-
-        if (!locationManager.isArenaPosition(toPlace)) {
-            return;
-        }
-
-        // This prevents water/lava from flowing to another location
-        event.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
     public void onFluidLevelChange(FluidLevelChangeEvent event) {
         Block block = event.getBlock();
         Location place = block.getLocation();

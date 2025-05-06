@@ -3,7 +3,6 @@ package me.rejomy.buildarea.listener;
 import me.rejomy.buildarea.BuildArea;
 import me.rejomy.buildarea.manager.LocationManager;
 import me.rejomy.buildarea.util.StringUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,7 +51,6 @@ public class InteractListener implements Listener {
             if (StringUtil.contains(item.getType().name(), restrictedTools)) {
                 sendMessage(event.getPlayer());
                 event.setCancelled(true);
-                return;
             }
         }
     }
