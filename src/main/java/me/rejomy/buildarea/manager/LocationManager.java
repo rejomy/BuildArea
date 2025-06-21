@@ -9,6 +9,7 @@ import me.rejomy.buildarea.util.WGUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,13 +56,15 @@ public class LocationManager {
             actionData.setBottomPart(doubleBlockBottom.getRawData());
         }
 
-        int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-                BuildArea.getInstance(),
-                placeResetTask,
-                20L,
-                20L
+        placeResetTask.setScheduleTask(
+                Bukkit.getScheduler().runTaskTimer(
+                        BuildArea.getInstance(),
+                        placeResetTask,
+                        20L,
+                        20L
+                )
         );
-        placeResetTask.setScheduleTaskId(taskId);
+
         operations.put(location, actionData);
     }
 

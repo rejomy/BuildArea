@@ -7,26 +7,24 @@ import me.rejomy.buildarea.manager.LocationManager;
 import me.rejomy.buildarea.util.BlockData;
 import me.rejomy.buildarea.util.DoubleBlockUtil;
 import me.rejomy.buildarea.util.PEUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 
 @Getter
 @Setter
-public final class PlaceResetTask extends BukkitRunnable {
+public final class PlaceResetTask implements Runnable {
 
     private final BlockData blockData;
-    private int scheduleTaskId;
+    private BukkitTask scheduleTask;
     private final LocationManager locationManager = BuildArea.getInstance().getLocationManager();
 
     public PlaceResetTask(BlockData blockData) {
         this.blockData = blockData;
-        this.scheduleTaskId = -1;
     }
 
     public void run() {
@@ -39,7 +37,7 @@ public final class PlaceResetTask extends BukkitRunnable {
             if (PEUtil.isPresent() && locationManager.getPlacedBlocks().contains(location)) {
                 int n2 = this.blockData.getBreakIndex();
                 byte by = (byte)(this.blockData.getLiveCycle() * 2);
-                List list = blockState.getWorld().getPlayers();
+                List<Player> list = blockState.getWorld().getPlayers();
                 PEUtil.sendDestroyParticle(n2, location, by, list);
             }
 
@@ -59,7 +57,7 @@ public final class PlaceResetTask extends BukkitRunnable {
             state.setData(blockState.getData());
             state.update();
             locationManager.getOperations().remove(location);
-            Bukkit.getScheduler().cancelTask(this.scheduleTaskId);
+            scheduleTask.cancel();
         }
     }
 }
