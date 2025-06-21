@@ -2,6 +2,7 @@ package me.rejomy.buildarea.listener;
 
 import me.rejomy.buildarea.BuildArea;
 import me.rejomy.buildarea.manager.LocationManager;
+import me.rejomy.buildarea.manager.UserManager;
 import me.rejomy.buildarea.util.BlockData;
 import me.rejomy.buildarea.util.PEUtil;
 import me.rejomy.buildarea.util.StringUtil;
@@ -25,20 +26,16 @@ import java.util.List;
 public class BlockListener implements Listener {
 
     private final LocationManager locationManager = BuildArea.getInstance().getLocationManager();
-    
+    private final UserManager userManager = BuildArea.getInstance().getUserManager();
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Location blockLocation = block.getLocation();
 
-        if (!locationManager.isArenaPosition(blockLocation)) {
+        if (!locationManager.isArenaPosition(blockLocation) || userManager.isWhiteListed(player))
             return;
-        }
-
-        if (BuildArea.getInstance().getUserManager().getWhitePlayerList().contains(player)) {
-            return;
-        }
 
         if (locationManager.getPlacedBlocks().contains(blockLocation)) {
             if (locationManager.getOperations().containsKey(blockLocation)) {
@@ -61,13 +58,8 @@ public class BlockListener implements Listener {
         Block block = event.getBlock();
         Location place = block.getLocation();
 
-        if (BuildArea.getInstance().getUserManager().getWhitePlayerList().contains(player)) {
+        if (!locationManager.isArenaPosition(place) || userManager.isWhiteListed(player))
             return;
-        }
-
-        if (!locationManager.isArenaPosition(place)) {
-            return;
-        }
 
         if (!event.getBlock().getType().isSolid()) {
             String[] standTypes = {"STAND"};
@@ -97,9 +89,8 @@ public class BlockListener implements Listener {
         Block block = event.getBlock();
         Location location = block.getLocation();
 
-        if (!locationManager.isArenaPosition(location)) {
+        if (!locationManager.isArenaPosition(location))
             return;
-        }
 
         event.setCancelled(true);
     }
@@ -110,9 +101,8 @@ public class BlockListener implements Listener {
         Location place = block.getLocation();
         String lastBlockName = event.getBlock().getType().name().toLowerCase();
 
-        if (!locationManager.isArenaPosition(place)) {
+        if (!locationManager.isArenaPosition(place))
             return;
-        }
 
         if (block.getType() == Material.CACTUS) {
             event.setCancelled(true);
@@ -125,8 +115,8 @@ public class BlockListener implements Listener {
     public void onGrowth(BlockFadeEvent event) {
         Block block = event.getBlock();
         Location location = block.getLocation();
-        if (locationManager.isArenaPosition(location) || block.getWorld().getName().contains("duels_maps")) {
+
+        if (locationManager.isArenaPosition(location))
             event.setCancelled(true);
-        }
     }
 }

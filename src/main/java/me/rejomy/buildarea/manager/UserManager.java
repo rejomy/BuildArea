@@ -10,4 +10,8 @@ import java.util.List;
 public class UserManager {
 
     private final List<Player> whitePlayerList = new ArrayList<>();
+
+    public boolean isWhiteListed(Player player) {
+        return whitePlayerList.contains(player);
+    }
 }

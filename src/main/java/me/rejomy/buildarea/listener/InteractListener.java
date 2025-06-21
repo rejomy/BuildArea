@@ -2,8 +2,8 @@ package me.rejomy.buildarea.listener;
 
 import me.rejomy.buildarea.BuildArea;
 import me.rejomy.buildarea.manager.LocationManager;
+import me.rejomy.buildarea.manager.UserManager;
 import me.rejomy.buildarea.util.StringUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 public class InteractListener implements Listener {
 
     private final LocationManager locationManager = BuildArea.getInstance().getLocationManager();
+    private final UserManager userManager = BuildArea.getInstance().getUserManager();
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -23,21 +24,19 @@ public class InteractListener implements Listener {
             return;
         }
 
+        Player player = event.getPlayer();
         Location place = event.getPlayer().getLocation();
-
-        if (!locationManager.isArenaPosition(place)) {
-            return;
-        }
-
         ItemStack item = event.getItem();
-        if (item == null) {
+
+        if (!locationManager.isArenaPosition(place) || userManager.isWhiteListed(player) ||
+            item == null) {
             return;
         }
 
         // I dont know why but player can place it somehow if we will check hasBlock, so if it placed to the air it is still triggering placing??
         String[] restrictedMaterials = {"WATER", "LAVA", "VINE"};
         if (StringUtil.contains(item.getType().name(), restrictedMaterials)) {
-            sendMessage(event.getPlayer());
+            sendMessage(player);
             event.setCancelled(true);
             return;
         }
@@ -51,21 +50,21 @@ public class InteractListener implements Listener {
             }
 
             if (item.getType() == Material.INK_SACK && item.getDurability() == 15) {
-                sendMessage(event.getPlayer());
+                sendMessage(player);
                 event.setCancelled(true);
                 return;
             }
 
             String[] restrictedTools = {"PAIN", "HOE", "SHOVEL", "BED"};
             if (StringUtil.contains(item.getType().name(), restrictedTools)) {
-                sendMessage(event.getPlayer());
+                sendMessage(player);
                 event.setCancelled(true);
                 return;
             }
         }
 
         if (!item.getType().isSolid() && item.getType() == Material.BUCKET) {
-            sendMessage(event.getPlayer());
+            sendMessage(player);
             event.setCancelled(true);
         }
     }

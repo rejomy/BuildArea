@@ -11,7 +11,7 @@ import org.bukkit.event.block.SpongeAbsorbEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 /**
- * Collect small events here.
+ * Bunch of small events here.
  */
 public class ActionListener implements Listener {
 
@@ -21,29 +21,21 @@ public class ActionListener implements Listener {
     public void onSpongeAbsorb(SpongeAbsorbEvent event) {
         Block block = event.getBlock();
         Location location = block.getLocation();
-
-        if (!locationManager.isArenaPosition(location)) {
-            return;
-        }
-
-        event.setCancelled(true);
+        event.setCancelled(locationManager.isArenaPosition(location));
     }
 
     @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent event) {
-        if (locationManager.getPlacedBlocks().contains(event.getBlock().getLocation())) {
+        if (locationManager.getPlacedBlocks().contains(event.getBlock().getLocation()))
             event.setCancelled(true);
-        }
     }
 
     @EventHandler
     public void onExplode(EntityExplodeEvent event) {
         Location place = event.getLocation();
 
-        if (!locationManager.isArenaPosition(place)) {
-            return;
-        }
-
-        event.blockList().removeIf(block -> !locationManager.getPlacedBlocks().contains(block.getLocation()));
+        if (locationManager.isArenaPosition(place))
+            event.blockList().removeIf(block ->
+                    !locationManager.getPlacedBlocks().contains(block.getLocation()));
     }
 }
